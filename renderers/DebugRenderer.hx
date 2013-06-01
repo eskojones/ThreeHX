@@ -76,8 +76,6 @@ class DebugRenderer
 		context.setTransform(1, 0, 0, -1, canvasWidthHalf, canvasHeightHalf);
 		renderData = projector.projectScene(scene, camera);
 		
-		calculateAmbientLight();
-		
 		var e = 0, el = renderData.elements.length;
 		while (e < el)
 		{
@@ -112,9 +110,9 @@ class DebugRenderer
 		var material = element.material;
 		if (Std.is(material, MeshFaceMaterial) == true) material = cast(material, MeshFaceMaterial).materials[0];
 		var c = material.color.clone();
-		var r = Math.round(renderData.ambientLight.r * material.color.r) * 255;
-		var g = Math.round(renderData.ambientLight.g * material.color.g) * 255;
-		var b = Math.round(renderData.ambientLight.b * material.color.b) * 255;
+		var r = Math.round(material.color.r * 255);
+		var g = Math.round(material.color.g * 255);
+		var b = Math.round(material.color.b * 255);
 		context.globalAlpha = material.opacity;
 		if (material.blending == THREE.NormalBlending) context.globalCompositeOperation = 'source-over';
 		else if (material.blending == THREE.AdditiveBlending) context.globalCompositeOperation = 'lighter';
@@ -151,16 +149,5 @@ class DebugRenderer
 		
 	}
 	
-	
-	inline public function calculateAmbientLight () 
-	{
-		renderData.ambientLight.setHex(0);
-		var i = 0, l = renderData.lights.length;
-		while (i < l)
-		{
-			var light = renderData.lights[i++];
-			if (Std.is(light, AmbientLight) == true) renderData.ambientLight.copy(light.color);
-		}
-	}
 	
 }
