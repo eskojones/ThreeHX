@@ -2,6 +2,8 @@
 package three.materials;
 
 import three.math.Color;
+import three.textures.Texture;
+import three.THREE;
 
 /**
  * 
@@ -11,27 +13,21 @@ import three.math.Color;
 class MeshBasicMaterial extends Material
 {
 	
-	public var color:Color;
-	public var map:Dynamic; //todo - THREE.Texture
+	public var map:Texture;
 	public var lightMap:Dynamic; //not sure what type goes here?
 	
 	public var specularMap:Dynamic;
 	
 	public var envMap:Dynamic;
-	public var combine:Dynamic; //todo - THREE Constants (THREE.MultiplyOperation)
+	public var combine:Int;
 	public var reflectivity:Float = 1.0;
 	public var refractionRatio:Float = 0.98;
 	
 	public var fog:Bool = true;
 	
-	public var shading:Dynamic; //todo - constants (THREE.SmoothShading)
+	public var shading:Int;
 	
-	public var wireframe:Bool = false;
-	public var wireframeLineWidth:Float = 1.0;
-	public var wireframeLinecap:String = 'round';
-	public var wireframeLinejoin:String = 'round';
-	
-	public var vertexColors:Dynamic; //todo - constants (THREE.NoColors)
+	public var vertexColors:Int;
 	
 	public var skinning:Bool = false;
 	public var morphTargets:Bool = false;
@@ -40,7 +36,9 @@ class MeshBasicMaterial extends Material
 	public function new(parameters:Dynamic = null) 
 	{
 		super();
-		color = new Color(0xffffff);
+		shading = THREE.SmoothShading;
+		combine = THREE.MultiplyOperation;
+		vertexColors = THREE.NoColors;
 		setValues(parameters);
 	}
 	
@@ -49,7 +47,6 @@ class MeshBasicMaterial extends Material
 	{
 		var mat = new MeshBasicMaterial();
 		super.clone(cast(mat, Material));
-		mat.color.copy(color);
 		mat.map = map;
 		mat.lightMap = lightMap;
 		mat.specularMap = specularMap;
@@ -59,10 +56,6 @@ class MeshBasicMaterial extends Material
 		mat.refractionRatio = refractionRatio;
 		mat.fog = fog;
 		mat.shading = shading;
-		mat.wireframe = wireframe;
-		mat.wireframeLineWidth = wireframeLineWidth;
-		mat.wireframeLinecap = wireframeLinecap;
-		mat.wireframeLinejoin = wireframeLinejoin;
 		mat.vertexColors = vertexColors;
 		mat.skinning = skinning;
 		mat.morphTargets = morphTargets;

@@ -14,6 +14,7 @@ class THREE
 	//Object3D type-flags
 	static public var Mesh:Int = 0;
 	static public var Light:Int = 1;
+	static public var AmbientLight:Int = 2;
 	
 	//Renderable type-flags
 	static public var RenderableFace3:Int = 0;

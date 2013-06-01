@@ -185,9 +185,10 @@ class Vector3
 	public function applyMatrix3 (m:Matrix3) : Vector3
 	{
 		var e = m.elements;
-		x = e[0] * x + e[3] * y + e[6] * z;
-		y = e[1] * x + e[4] * y + e[7] * z;
-		z = e[2] * x + e[5] * y + e[8] * z;
+		var x = this.x, y = this.y, z = this.z;
+		this.x = e[0] * x + e[3] * y + e[6] * z;
+		this.y = e[1] * x + e[4] * y + e[7] * z;
+		this.z = e[2] * x + e[5] * y + e[8] * z;
 		return this;
 	}
 	
@@ -195,9 +196,10 @@ class Vector3
 	public function applyMatrix4 (m:Matrix4) : Vector3
 	{
 		var e = m.elements;
-		x = e[0] * x + e[4] * y + e[8] * z + e[12];
-		y = e[1] * x + e[5] * y + e[9] * z + e[13];
-		z = e[2] * x + e[6] * y + e[10] * z + e[14];
+		var x = this.x, y = this.y, z = this.z;
+		this.x = e[0] * x + e[4] * y + e[8] * z + e[12];
+		this.y = e[1] * x + e[5] * y + e[9] * z + e[13];
+		this.z = e[2] * x + e[6] * y + e[10] * z + e[14];
 		return this;
 	}
 	
@@ -205,10 +207,11 @@ class Vector3
 	public function applyProjection (m:Matrix4) : Vector3
 	{
 		var e = m.elements;
+		var x = this.x, y = this.y, z = this.z;
 		var d:Float = 1 / (e[3] * x + e[7] * y + e[11] * z + e[15]);
-		x = (e[0] * x + e[4] * y + e[8] * z + e[12]) * d;
-		y = (e[1] * x + e[5] * y + e[9] * z + e[13]) * d;
-		z = (e[2] * x + e[6] * y + e[10] * z + e[14]) * d;
+		this.x = (e[0] * x + e[4] * y + e[8] * z + e[12]) * d;
+		this.y = (e[1] * x + e[5] * y + e[9] * z + e[13]) * d;
+		this.z = (e[2] * x + e[6] * y + e[10] * z + e[14]) * d;
 		return this;
 	}
 	
@@ -233,9 +236,10 @@ class Vector3
 	public function transformDirection (m:Matrix4) : Vector3
 	{
 		var e = m.elements;
-		x = e[0] * x + e[4] * y + e[8] * z;
-		y = e[1] * x + e[5] * y + e[9] * z;
-		z = e[2] * x + e[6] * y + e[10] * z;
+		var x = this.x, y = this.y, z = this.z;
+		this.x = e[0] * x + e[4] * y + e[8] * z;
+		this.y = e[1] * x + e[5] * y + e[9] * z;
+		this.z = e[2] * x + e[6] * y + e[10] * z;
 		normalize();
 		return this;
 	}
@@ -369,6 +373,7 @@ class Vector3
 		var m21 = te[1], m22 = te[5], m23 = te[9];
 		var m31 = te[2], m32 = te[6], m33 = te[10];
 		
+		//todo - support other euler orders
 		if (order == 'XYZ')
 		{
 			y = Math.asin(Math.min(Math.max(m13, -1), 1));

@@ -33,7 +33,7 @@ class Vector4
 		y = v.y;
 		z = v.z;
 		w = v.w;
-		//if (Reflect.hasField(v, 'w') == true) w = cast(v.w, Float);
+		//if (Reflect.hasField(v, 'w') == true) w = v.w;
 		return this;
 	}
 	
@@ -209,10 +209,11 @@ class Vector4
 	public function applyMatrix4 (m:Matrix4) : Vector4
 	{
 		var e = m.elements;
-		x = e[0] * x + e[4] * y + e[8] * z + e[12] * w;
-		y = e[1] * x + e[5] * y + e[9] * z + e[13] * w;
-		z = e[2] * x + e[6] * y + e[10] * z + e[14] * w;
-		w = e[3] * x + e[7] * y + e[11] * z + e[15] * w;
+		var x = this.x, y = this.y, z = this.z, w = this.w;
+		this.x = e[0] * x + e[4] * y + e[8] * z + e[12] * w;
+		this.y = e[1] * x + e[5] * y + e[9] * z + e[13] * w;
+		this.z = e[2] * x + e[6] * y + e[10] * z + e[14] * w;
+		this.w = e[3] * x + e[7] * y + e[11] * z + e[15] * w;
 		return this;
 	}
 	
@@ -239,6 +240,7 @@ class Vector4
 	
 	public function setAxisAngleFromRotationMatrix (m:Matrix4) : Vector4
 	{
+		var x = this.x, y = this.y, z = this.z, w = this.w;
 		var angle, epsilon = 0.01, epsilon2 = 0.1;
 		var te = m.elements;
 		var m11 = te[0], m12 = te[4], m13 = te[8];
@@ -313,10 +315,10 @@ class Vector4
 		
 		if ( Math.abs( s ) < 0.001 ) s = 1;
 		
-		x = ( m32 - m23 ) / s;
-		y = ( m13 - m31 ) / s;
-		z = ( m21 - m12 ) / s;
-		w = Math.acos( ( m11 + m22 + m33 - 1 ) / 2 );
+		this.x = ( m32 - m23 ) / s;
+		this.y = ( m13 - m31 ) / s;
+		this.z = ( m21 - m12 ) / s;
+		this.w = Math.acos( ( m11 + m22 + m33 - 1 ) / 2 );
 		return this;
 	}
 	

@@ -212,7 +212,7 @@ class Projector
 		if (sortObjects == true) renderData.objects.sort(
 			function (a:RenderableObject, b:RenderableObject) : Int
 			{
-				return (b.z - a.z < 0 ? 1 : -1);
+				return (b.z - a.z < 0 ? -1 : 1);
 			}
 		);
 		

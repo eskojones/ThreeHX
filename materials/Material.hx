@@ -17,6 +17,8 @@ class Material
 	public var name:String;
 	public var side:Int;
 	
+	public var color:Color; //moved here from most other Materials
+	
 	public var opacity:Float = 1.0;
 	public var transparent:Bool = false;
 	
@@ -36,6 +38,12 @@ class Material
 	
 	public var overdraw:Bool = false; //THREE: for fixing antialiasing gaps in CanvasRenderer
 	
+	//wireframe settings moved to the superclass because they (almost) all use it at some point
+	public var wireframe:Bool = false;
+	public var wireframeLineWidth:Float = 1.0;
+	public var wireframeLinecap:String = 'round';
+	public var wireframeLinejoin:String = 'round';
+	
 	public var visible:Bool = true;
 	public var needsUpdate:Bool = true;
 
@@ -47,6 +55,8 @@ class Material
 		blendSrc = THREE.SrcAlphaFactor;
 		blendDst = THREE.OneMinusSrcAlphaFactor;
 		blendEquation = THREE.AddEquation;
+		
+		color = new Color(Math.round(Math.random() * 0xffffff));
 	}
 	
 	
@@ -84,6 +94,7 @@ class Material
 		if (material == null) material = new Material();
 		material.name = name;
 		material.side = side;
+		material.color.copy(color);
 		material.opacity = opacity;
 		material.transparent = transparent;
 		material.blending = blending;
@@ -98,6 +109,10 @@ class Material
 		material.alphaTest = alphaTest;
 		material.overdraw = overdraw;
 		material.visible = visible;
+		material.wireframe = wireframe;
+		material.wireframeLineWidth = wireframeLineWidth;
+		material.wireframeLinecap = wireframeLinecap;
+		material.wireframeLinejoin = wireframeLinejoin;
 		return material;
 	}
 	
