@@ -1,3 +1,4 @@
+
 package three.core;
 
 import haxe.Json;
@@ -9,13 +10,16 @@ import three.math.Vector3;
 import three.scenes.Scene;
 
 /**
- * ...
+ * 
  * @author Three.js Project (http://threejs.org)
  * @author dcm
  */
 
 class Object3D
 {
+	
+	public var type:Int; //constant to avoid type-checking all the time
+	
 	public var id:Int;
 	public var name:String;
 	public var parent:Object3D;

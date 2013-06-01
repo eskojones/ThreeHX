@@ -1,7 +1,6 @@
 
 package three.textures;
 
-import haxe.io.Bytes;
 
 /**
  * TODO
@@ -10,10 +9,13 @@ import haxe.io.Bytes;
 
 class Image
 {
+	
+	//multi-target class for image data (not ImageData)
 	public var data:Array<Int> = null;
 	public var width:Int = 0;
 	public var height:Int = 0;
 
+	
 	public function new(width:Int = null, height:Int = null) 
 	{
 		if (width != null) 

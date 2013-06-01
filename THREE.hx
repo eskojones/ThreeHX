@@ -1,13 +1,34 @@
 
 package three;
 
+
+
 /**
- * ...
+ * 
  * @author dcm
  */
 
 class THREE
 {
+	
+	//Object3D type-flags
+	static public var Mesh:Int = 0;
+	static public var Light:Int = 1;
+	
+	//Renderable type-flags
+	static public var RenderableFace3:Int = 0;
+	static public var RenderableFace4:Int = 1;
+	static public var RenderableLine:Int = 2;
+	static public var RenderableObject:Int = 3;
+	static public var RenderableParticle:Int = 4;
+	static public var RenderableVertex:Int = 5;
+	
+	
+	
+	
+	
+	// ----- Original THREE.js Constants -----
+	
 	//GL State Constants
 	static public var CullFaceNone:Int = 0;
 	static public var CullFaceBack:Int = 1;
@@ -73,12 +94,12 @@ class THREE
 	static public var MixOperation:Int = 1;
 	static public var AddOperation:Int = 2;
 	
-	//Mapping Modes
-	static public function UVMapping () { }
-	static public function CubeReflectionMapping () { }
-	static public function CubeRefractionMapping () { }
-	static public function SphericalReflectionMapping () { }
-	static public function SphericalRefractionMapping () { }
+	//Mapping Modes - these were empty functions.. 
+	static public var UVMapping:Int = 0;
+	static public var CubeRflectionMapping:Int = 1;
+	static public var CubeRefractionMapping:Int = 2;
+	static public var SphericalReflectionMapping:Int = 3;
+	static public var SphericalRefractionMapping:Int = 4;
 	
 	//Wrapping Modes
 	static public var RepeatWrapping:Int = 1000;

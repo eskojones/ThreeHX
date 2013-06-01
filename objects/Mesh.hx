@@ -5,20 +5,25 @@ import three.core.Geometry;
 import three.core.Object3D;
 import three.materials.Material;
 import three.materials.MeshBasicMaterial;
+import three.THREE;
 
-/**
- * ...
+/* 
+ * 
  * @author dcm
  */
 
 class Mesh extends Object3D
 {
+	
 	public var geometry:Geometry;
 	public var material:Material;
 
+	
 	public function new(geometry:Geometry = null, material:Dynamic = null) 
 	{
 		super();
+		type = THREE.Mesh;
+		
 		if (geometry != null) setGeometry(geometry);
 		setMaterial(material);
 	}

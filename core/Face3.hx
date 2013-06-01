@@ -1,17 +1,18 @@
 
 package three.core;
-import haxe.rtti.Generic;
+
 import three.math.Color;
 import three.math.Vector3;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
 
-class Face3 implements Generic
+class Face3
 {
+	
 	public var a:Int;
 	public var b:Int;
 	public var c:Int;

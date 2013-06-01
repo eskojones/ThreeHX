@@ -1,11 +1,14 @@
+
 package three.cameras;
 
 /**
- * ...
- * @author ...
+ * 
+ * @author dcm
  */
+
 class OrthographicCamera extends Camera
 {
+	
 	public var left:Float;
 	public var right:Float;
 	public var top:Float;
@@ -13,6 +16,7 @@ class OrthographicCamera extends Camera
 	public var near:Float;
 	public var far:Float;
 
+	
 	public function new(left:Float, right:Float, top:Float, bottom:Float, near:Float = 0.1, far:Float = 2000) 
 	{
 		super();
@@ -24,6 +28,7 @@ class OrthographicCamera extends Camera
 		this.far = far;
 		updateProjectionMatrix();
 	}
+	
 	
 	public function updateProjectionMatrix ()
 	{

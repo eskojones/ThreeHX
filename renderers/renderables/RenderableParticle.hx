@@ -1,28 +1,32 @@
 
 package three.renderers.renderables;
+
 import three.materials.Material;
+import three.math.Vector2;
 import three.math.Vector3;
+import three.THREE;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
-class RenderableParticle
+class RenderableParticle extends Renderable
 {
+	
 	public var object:RenderableObject = null;
 	public var x:Float = null;
 	public var y:Float = null;
-	public var z:Float = null;
 
 	public var rotation:Vector3 = null;
-	public var scale:Vector3; //should be v2, does it matter?
-	
-	public var material:Material = null;
+	public var scale:Vector2 = null;
 	
 	public function new() 
 	{
-		scale = new Vector3();
+		super();
+		type = THREE.RenderableParticle;
+
+		scale = new Vector2();
 	}
 	
 }

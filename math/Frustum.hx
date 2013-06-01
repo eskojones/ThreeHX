@@ -1,18 +1,21 @@
 
 package three.math;
+
 import three.core.Object3D;
 import three.objects.Mesh;
 
 /**
- * ...
+ * 
  * @author Three.js Project (http://threejs.org)
  * @author dcm
  */
 
 class Frustum
 {
+	
 	public var planes:Array<Plane>;
 
+	
 	public function new(p0:Plane = null, p1:Plane = null, p2:Plane = null, p3:Plane = null, p4:Plane = null, p5:Plane = null) 
 	{
 		planes = new Array<Plane>();

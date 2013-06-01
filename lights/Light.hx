@@ -1,21 +1,27 @@
+
 package three.lights;
 
 import three.core.Object3D;
 import three.math.Color;
 import three.math.Vector3;
+import three.THREE;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
 class Light extends Object3D
 {
+	
 	public var color:Color;
 
+	
 	public function new(hex:Int = 0xffffffff) 
 	{
 		super();
+		type = THREE.Light;
+		
 		color = new Color(hex);
 		target = null;
 	}

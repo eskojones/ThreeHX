@@ -9,12 +9,13 @@ import three.math.Sphere;
 import three.math.Vector3;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
 class Geometry
 {
+	
 	public var id:Int;
 	public var name:String;
 	public var vertices:Array<Vector3>;

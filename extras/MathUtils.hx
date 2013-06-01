@@ -2,13 +2,14 @@
 package three.extras;
 
 /**
- * ...
+ * 
  * @author Three.js Project (http://threejs.org)
  * @author dcm
  */
 
 class MathUtils
 {
+	
 	static public var DEG2RAD:Float = Math.PI / 180;
 	static public var RAD2DEG:Float = 180 / Math.PI;
 	

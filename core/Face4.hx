@@ -1,16 +1,17 @@
 
 package three.core;
-import haxe.rtti.Generic;
+
 import three.math.Color;
 import three.math.Vector3;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
 class Face4 extends Face3
 {
+	
 	public var d:Int;
 	
 	

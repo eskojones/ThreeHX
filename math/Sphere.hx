@@ -2,13 +2,14 @@
 package three.math;
 
 /**
- * ...
+ * 
  * @author Three.js Project (http://threejs.org)
  * @author dcm
  */
 
 class Sphere
 {
+	
 	public var center:Vector3;
 	public var radius:Float;
 

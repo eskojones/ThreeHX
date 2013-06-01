@@ -6,16 +6,18 @@ import three.math.Matrix4;
 import three.math.Vector3;
 
 /**
- * ...
+ * Base Camera
  * @author dcm
  */
 
 class Camera extends Object3D
 {
+	
 	public var matrixWorldInverse:Matrix4;
 	public var projectionMatrix:Matrix4;
 	public var projectionMatrixInverse:Matrix4;
 
+	
 	public function new() 
 	{
 		super();

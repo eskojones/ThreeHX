@@ -1,11 +1,13 @@
+
 package three.cameras;
 
 import three.extras.MathUtils;
 
 /**
- * ...
+ * 
  * @author dcm
  */
+
 class PerspectiveCamera extends Camera
 {
 
@@ -20,6 +22,7 @@ class PerspectiveCamera extends Camera
 	public var y:Float = null;
 	public var width:Float = null;
 	public var height:Float = null;
+	
 	
 	public function new(fov:Float = 50, aspect:Float = 1, near:Float = 0.1, far:Float = 2000) 
 	{

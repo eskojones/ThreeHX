@@ -1,16 +1,19 @@
+
 package three.math;
 
 /**
- * ...
- * @author ...
+ * 
+ * @author dcm
  */
 
 class Color
 {
+	
 	public var r:Float = 1.0;
 	public var g:Float = 1.0;
 	public var b:Float = 1.0;
 
+	
 	public function new(value:Int = null) 
 	{
 		if (value != null) set(value);

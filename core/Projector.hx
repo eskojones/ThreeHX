@@ -14,6 +14,7 @@ import three.math.Ray;
 import three.math.Vector3;
 import three.math.Vector4;
 import three.objects.Mesh;
+import three.renderers.renderables.Renderable;
 import three.renderers.renderables.RenderableFace3;
 import three.renderers.renderables.RenderableFace4;
 import three.renderers.renderables.RenderableLine;
@@ -24,12 +25,13 @@ import three.scenes.Scene;
 import three.THREE;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
 class Projector
 {
+	
 	public var renderData:RenderData;
 
 	public var objectCurrent:RenderableObject;
@@ -157,8 +159,8 @@ class Projector
 			var object = parent.children[c++];
 			if (object.visible == false) continue;
 			
-			if (Std.is(object, Light) == true) renderData.lights.push(cast(object, Light));
-			else if (Std.is(object, Mesh) == true) //todo - THREE.Line
+			if (object.type == THREE.Light) renderData.lights.push(cast(object, Light));
+			else if (object.type == THREE.Mesh) //todo - THREE.Line
 			{
 				if (object.frustumCulled == false || frustum.intersectsObject(object) == true)
 				{
@@ -226,7 +228,7 @@ class Projector
 		face4Count = 0;
 		lineCount = 0;
 		particleCount = 0;
-		renderData.elements = new Array<Dynamic>();
+		renderData.elements = new Array<Renderable>();
 		
 		if (scene.autoUpdate == true) scene.updateMatrixWorld();
 		if (camera.parent == null) camera.updateMatrixWorld();

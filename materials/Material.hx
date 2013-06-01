@@ -6,12 +6,13 @@ import three.math.Vector3;
 import three.THREE;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
 class Material
 {
+	
 	public var id:Int;
 	public var name:String;
 	public var side:Int;
@@ -38,6 +39,7 @@ class Material
 	public var visible:Bool = true;
 	public var needsUpdate:Bool = true;
 
+	
 	public function new() 
 	{
 		side = THREE.FrontSide;

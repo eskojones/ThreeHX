@@ -1,9 +1,11 @@
+
 package three.core;
 
 /**
- * ...
+ * 
  * @author dcm
  */
+
 class Clock
 {
 
@@ -64,3 +66,4 @@ class Clock
 	
 	
 }
+

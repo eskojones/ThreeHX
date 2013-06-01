@@ -1,8 +1,8 @@
 
 package three.math;
 
-/**
- * ...
+/* 
+ * 
  * @author Three.js Project (http://threejs.org)
  * @author dcm
  */

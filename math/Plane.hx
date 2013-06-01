@@ -2,13 +2,14 @@
 package three.math;
 
 /**
- * ...
+ * 
  * @author Three.js Project (http://threejs.org)
  * @author dcm
  */
 
 class Plane
 {
+	
 	public var normal:Vector3;
 	public var constant:Float;
 

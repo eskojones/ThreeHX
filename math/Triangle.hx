@@ -2,12 +2,13 @@
 package three.math;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
 class Triangle
 {
+	
 	public var a:Vector3;
 	public var b:Vector3;
 	public var c:Vector3;

@@ -2,7 +2,7 @@
 package three.math;
 
 /**
- * ...
+ * 
  * @author Three.js Project (http://threejs.org)
  * @author dcm
  */
@@ -126,11 +126,11 @@ class Matrix3
 		if (det == 0)
 		{
 			trace('Matrix3.getInverse: cant invert matrix, determinant is 0');
-			this.identity();
+			identity();
 			return this;
 		}
 		
-		this.multiplyScalar(1.0 / det);
+		multiplyScalar(1.0 / det);
 		return this;
 	}
 	

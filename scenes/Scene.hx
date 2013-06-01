@@ -1,3 +1,4 @@
+
 package three.scenes;
 
 import three.cameras.Camera;
@@ -7,7 +8,7 @@ import three.lights.Light;
 import three.materials.Material;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
@@ -94,7 +95,7 @@ class Scene extends Object3D
 		{
 			__removeObject(object.children[c++]);
 		}
-		
+		trace('Scene.__removeObject');
 	}
 	
 	

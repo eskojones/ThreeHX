@@ -1,35 +1,38 @@
 
 package three.textures;
+
+import three.math.Vector2;
 import three.math.Vector3;
 import three.THREE;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
 class Texture
 {
+	
 	public var id:Int;
 	public var name:String;
-	public var image:Image; //todo - Image
+	public var image:Image;
 	
-	public var mipmaps:Array<Dynamic>;
-	public var mapping:Dynamic = THREE.UVMapping;
+	public var mipmaps:Array<Dynamic>; //??
+	public var mapping:Int;
 	
-	public var wrapS:Int = THREE.ClampToEdgeWrapping;
-	public var wrapT:Int = THREE.ClampToEdgeWrapping;
+	public var wrapS:Int;
+	public var wrapT:Int;
 	
-	public var magFilter:Int = THREE.LinearFilter;
-	public var minFilter:Int  = THREE.LinearMipMapLinearFilter;
+	public var magFilter:Int;
+	public var minFilter:Int;
 	
 	public var anisotropy:Int = 1;
 	
-	public var format:Int = THREE.RGBAFormat;
-	public var type:Int = THREE.UnsignedByteType;
+	public var format:Int;
+	public var type:Int;
 	
-	public var offset:Vector3; //todo - Vector2
-	public var repeat:Vector3; //^^^
+	public var offset:Vector2;
+	public var repeat:Vector2;
 	
 	public var generateMipmaps:Bool = true;
 	public var premultiplyAlpha:Bool = false;
@@ -44,27 +47,57 @@ class Texture
 		image:Image = null, ?mapping:Dynamic, ?wrapS:Int, ?wrapT:Int,
 		?magFilter:Int, ?minFilter:Int, ?format:Int, ?type:Int, ?anisotropy:Int) 
 	{
+		//Default constants
+		this.mapping = THREE.UVMapping;
+		wrapS = THREE.ClampToEdgeWrapping;
+		wrapT = THREE.ClampToEdgeWrapping;
+		magFilter = THREE.LinearFilter;
+		minFilter = THREE.LinearMipMapLinearFilter;
+		format = THREE.RGBAFormat;
+		type = THREE.UnsignedByteType;
+		
 		this.image = image;
 		this.mipmaps = new Array<Dynamic>();
-		if (wrapS != null) this.wrapS = wrapS;
-		if (wrapT != null) this.wrapT = wrapT;
+		if (wrapS != null) this.wrapS = wrapS; else this.wrapS = THREE.ClampToEdgeWrapping;
+		if (wrapT != null) this.wrapT = wrapT; else this.wrapT = THREE.ClampToEdgeWrapping;
 		
-		if (magFilter != null) this.magFilter = magFilter;
-		if (minFilter != null) this.minFilter = minFilter;
+		if (magFilter != null) this.magFilter = magFilter; else this.magFilter = THREE.LinearFilter;
+		if (minFilter != null) this.minFilter = minFilter; else this.minFilter = THREE.LinearMipMapLinearFilter;
 		if (anisotropy != null) this.anisotropy = anisotropy;
 		
-		if (format != null) this.format = format;
-		if (type != null) this.type = type;
+		if (format != null) this.format = format; else this.format = THREE.RGBAFormat;
+		if (type != null) this.type = type; else this.type = THREE.UnsignedByteType;
 		
-		offset = new Vector3(0, 0, 0);
-		repeat = new Vector3(1, 1, 0);
+		offset = new Vector2(0, 0);
+		repeat = new Vector2(1, 1);
 	}
 	
 	
 	public function clone (texture:Texture = null) : Texture
 	{
 		if (texture == null) texture = new Texture();
-		//todo
+		texture.image = image;
+		texture.mipmaps = mipmaps.slice(0);
+		
+		texture.mapping = mapping;
+		texture.wrapS = wrapS;
+		texture.wrapT = wrapT;
+		
+		texture.magFilter = magFilter;
+		texture.minFilter = minFilter;
+		
+		texture.anisotropy = anisotropy;
+		
+		texture.format = format;
+		texture.type = type;
+		
+		texture.offset.copy(offset);
+		texture.repeat.copy(repeat);
+		
+		texture.generateMipmaps = generateMipmaps;
+		texture.premultiplyAlpha = premultiplyAlpha;
+		texture.flipY = flipY;
+		texture.unpackAlignment = unpackAlignment;
 		return texture;
 	}
 

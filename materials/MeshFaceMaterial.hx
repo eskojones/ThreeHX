@@ -2,14 +2,16 @@
 package three.materials;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
 class MeshFaceMaterial extends Material
 {
+	
 	public var materials:Array<Material>;
 
+	
 	public function new(materials:Array<Material> = null) 
 	{
 		super();

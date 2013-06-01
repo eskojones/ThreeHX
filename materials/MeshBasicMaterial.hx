@@ -1,14 +1,16 @@
 
 package three.materials;
+
 import three.math.Color;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
 class MeshBasicMaterial extends Material
 {
+	
 	public var color:Color;
 	public var map:Dynamic; //todo - THREE.Texture
 	public var lightMap:Dynamic; //not sure what type goes here?
@@ -34,6 +36,7 @@ class MeshBasicMaterial extends Material
 	public var skinning:Bool = false;
 	public var morphTargets:Bool = false;
 
+	
 	public function new(parameters:Dynamic = null) 
 	{
 		super();

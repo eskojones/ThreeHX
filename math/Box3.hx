@@ -3,13 +3,15 @@ package three.math;
 
 
 /**
- * ...
+ * 
  * @author Three.js Project (http://threejs.org)
  * @author dcm
  */
 
+ 
 class Box3
 {
+	
 	public var min:Vector3;
 	public var max:Vector3;
 	

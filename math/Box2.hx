@@ -1,15 +1,18 @@
+
 package three.math;
-import haxe.ds.Vector;
 
 /**
- * ...
+ * 
  * @author dcm
  */
+
 class Box2
 {
+	
 	public var min:Vector2;
 	public var max:Vector2;
 
+	
 	public function new(min:Vector2 = null, max:Vector2 = null) 
 	{
 		if (min == null) this.min = new Vector2(Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY);

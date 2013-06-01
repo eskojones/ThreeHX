@@ -2,12 +2,13 @@
 package three.math;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
 class Ray
 {
+	
 	public var origin:Vector3;
 	public var direction:Vector3;
 

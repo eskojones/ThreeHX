@@ -1,9 +1,10 @@
 
 package three.math;
+
 import three.extras.MathUtils;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 

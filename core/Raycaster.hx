@@ -1,5 +1,6 @@
 
 package three.core;
+
 import three.materials.MeshFaceMaterial;
 import three.math.Matrix4;
 import three.math.Plane;
@@ -11,12 +12,13 @@ import three.objects.Mesh;
 import three.THREE;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
 class Raycaster
 {
+	
 	public var ray:Ray;
 	public var near:Float = 0.0;
 	public var far:Float = 0.0;
@@ -29,6 +31,7 @@ class Raycaster
 	public var matrixPosition:Vector3;
 	public var inverseMatrix:Matrix4;
 
+	
 	public function new(origin:Vector3, direction:Vector3, near:Float = null, far = null) 
 	{
 		ray = new Ray(origin, direction);

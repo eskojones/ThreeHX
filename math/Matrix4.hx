@@ -1,10 +1,11 @@
 
 package three.math;
+
 import three.extras.MathUtils;
 import three.THREE;
 
 /**
- * ...
+ * 
  * @author Three.js Project (http://threejs.org)
  * @author dcm
  */
@@ -13,6 +14,7 @@ class Matrix4
 {
 
 	public var elements:Array<Float>;
+	
 	
 	public function new(
 		n11:Float = 1, n12:Float = 0, n13:Float = 0, n14:Float = 0,

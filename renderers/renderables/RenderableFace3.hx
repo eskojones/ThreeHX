@@ -1,16 +1,19 @@
 
 package three.renderers.renderables;
+
 import three.materials.Material;
 import three.math.Color;
 import three.math.Vector3;
+import three.THREE;
 
 /**
- * ...
+ * 
  * @author dcm
  */
 
-class RenderableFace3
+class RenderableFace3 extends Renderable
 {
+	
 	public var v1:RenderableVertex;
 	public var v2:RenderableVertex;
 	public var v3:RenderableVertex;
@@ -24,13 +27,14 @@ class RenderableFace3
 	public var vertexNormalsModelView:Array<Vector3>;
 	
 	public var color:Color = null;
-	public var material:Material = null;
 	public var uvs:Array<Dynamic>;
 	
-	public var z:Float = null;
 
 	public function new() 
 	{
+		super();
+		type = THREE.RenderableFace3;
+		
 		v1 = new RenderableVertex();
 		v2 = new RenderableVertex();
 		v3 = new RenderableVertex();

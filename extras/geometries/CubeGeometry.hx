@@ -1,12 +1,13 @@
 
 package three.extras.geometries;
+
 import three.core.Face4;
 import three.core.Geometry;
 import three.math.Vector3;
 
 /**
- * ...
- * @author ...
+ * 
+ * @author dcm
  */
 
 class CubeGeometry extends Geometry
@@ -19,6 +20,7 @@ class CubeGeometry extends Geometry
 	public var widthSegments:Int;
 	public var heightSegments:Int;
 	public var depthSegments:Int;
+	
 	
 	public function new(width:Float, height:Float, depth:Float, 
 						widthSegments:Int = 1, heightSegments:Int = 1, depthSegments:Int = 1) 
