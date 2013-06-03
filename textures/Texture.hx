@@ -49,15 +49,16 @@ class Texture
 	{
 		//Default constants
 		this.mapping = THREE.UVMapping;
-		wrapS = THREE.ClampToEdgeWrapping;
-		wrapT = THREE.ClampToEdgeWrapping;
-		magFilter = THREE.LinearFilter;
-		minFilter = THREE.LinearMipMapLinearFilter;
-		format = THREE.RGBAFormat;
-		type = THREE.UnsignedByteType;
+		this.wrapS = THREE.ClampToEdgeWrapping;
+		this.wrapT = THREE.ClampToEdgeWrapping;
+		this.magFilter = THREE.LinearFilter;
+		this.minFilter = THREE.LinearMipMapLinearFilter;
+		this.format = THREE.RGBAFormat;
+		this.type = THREE.UnsignedByteType;
 		
 		this.image = image;
 		this.mipmaps = new Array<Dynamic>();
+		
 		if (wrapS != null) this.wrapS = wrapS; else this.wrapS = THREE.ClampToEdgeWrapping;
 		if (wrapT != null) this.wrapT = wrapT; else this.wrapT = THREE.ClampToEdgeWrapping;
 		

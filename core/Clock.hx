@@ -58,6 +58,7 @@ class Clock
 		{
 			var newTime = Date.now().getTime();
 			diff = newTime - oldTime;
+			oldTime = newTime;
 			elapsedTime += diff;
 		}
 		

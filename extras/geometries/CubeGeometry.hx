@@ -37,6 +37,10 @@ class CubeGeometry extends Geometry
 		var hhalf:Float = height / 2;
 		var dhalf:Float = depth / 2;
 		
+		/*
+		 * materialIndex in the original source were unique for each plane
+		 * but in Haxe arrays dont 'wrap around' like in JS, so we'll set them all to 0 for this.
+		 */
 		buildPlane('z', 'y', -1, -1, depth, height, whalf, 0); //px
 		buildPlane('z', 'y',  1, -1, depth, height, -whalf, 0); //nx
 		buildPlane('x', 'z',  1,  1, width, depth,  hhalf, 0); //py

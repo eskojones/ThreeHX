@@ -119,7 +119,6 @@ class Material
 	
 	public function dispose () 
 	{
-		trace('hmm, what to do');
 	}
 	
 	

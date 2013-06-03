@@ -1,7 +1,6 @@
 
 package three.core;
 
-import haxe.ds.Vector;
 import three.cameras.Camera;
 import three.lights.Light;
 import three.materials.Material;
@@ -153,10 +152,13 @@ class Projector
 	public function projectObject (parent:Object3D)
 	{
 		//Iterate the children of this object
-		var c = 0, cl = parent.children.length;
-		while (c < cl)
+		var cIter = parent.children.iterator();
+		while (cIter.hasNext() == true)
+		//var c = 0, cl = parent.children.length;
+		//while (c < cl)
 		{
-			var object = parent.children[c++];
+			var object = cIter.next();
+			//var object = parent.children[c++];
 			if (object.visible == false) continue;
 			
 			if (object.type == THREE.Light) renderData.lights.push(cast(object, Light));
@@ -209,12 +211,7 @@ class Projector
 		renderData.objects = new Array<RenderableObject>();
 		projectObject(root);
 		
-		if (sortObjects == true) renderData.objects.sort(
-			function (a:RenderableObject, b:RenderableObject) : Int
-			{
-				return (b.z - a.z < 0 ? -1 : 1);
-			}
-		);
+		if (sortObjects == true) renderData.objects.sort(painterSort);
 		
 		return renderData;
 	}
@@ -252,7 +249,10 @@ class Projector
 			o++;
 		}
 		
-		//todo: sort elements 
+		if (sortElements == true) 
+		{
+			renderData.elements.sort(painterSort);
+		}
 		
 		return renderData;
 	}
@@ -265,7 +265,7 @@ class Projector
 	{
 		var geometry:Geometry = mesh.geometry;
 		var vertices:Array<Vector3> = geometry.vertices;
-		var faces:Array<Face4> = geometry.faces;
+		var faces:Array<Dynamic> = geometry.faces;
 		var faceVertexUvs = geometry.faceVertexUvs;
 		var visible = false;
 		
@@ -309,7 +309,6 @@ class Projector
 			if (material == null) continue;
 			var side = material.side;
 			
-			//check for Face4 first here because it extends Face3 so a face3 check will be true also
 			if (Std.is(face, Face4) == true)
 			{
 				var v1:RenderableVertex = vertexPool[face.a];
@@ -322,28 +321,28 @@ class Projector
 				points4[2] = v3.positionScreen;
 				points4[3] = v4.positionScreen;
 				
-				//Negating the original condition here as it is less nesting
-				if (v1.visible == false && v2.visible == false && v3.visible == false && v4.visible == false
-				 && clipBox.isIntersectionBox(boundingBox.setFromPoints(points4)) == false) continue;
-				
-				visible = ( v4.positionScreen.x - v1.positionScreen.x ) 
-						* ( v2.positionScreen.y - v1.positionScreen.y ) 
-						- ( v4.positionScreen.y - v1.positionScreen.y ) 
-						* ( v2.positionScreen.x - v1.positionScreen.x ) < 0 ||
-						  ( v2.positionScreen.x - v3.positionScreen.x )
-						* ( v4.positionScreen.y - v3.positionScreen.y )
-						- ( v2.positionScreen.y - v3.positionScreen.y )
-						* ( v4.positionScreen.x - v3.positionScreen.x ) < 0;
-				
-				//Negating original condition again
-				if (side != THREE.DoubleSide && visible != (side == THREE.FrontSide)) continue;
-				
-				face4Current = getNextFace4InPool();
-				face4Current.v1.copy(v1);
-				face4Current.v2.copy(v2);
-				face4Current.v3.copy(v3);
-				face4Current.v4.copy(v4);
-				type = 4;
+				if (v1.visible == true || v2.visible == true || v3.visible == true || v4.visible == true
+				 || clipBox.isIntersectionBox(boundingBox.setFromPoints(points4)) == true) 
+				{
+					visible = ( v4.positionScreen.x - v1.positionScreen.x ) 
+							* ( v2.positionScreen.y - v1.positionScreen.y ) 
+							- ( v4.positionScreen.y - v1.positionScreen.y ) 
+							* ( v2.positionScreen.x - v1.positionScreen.x ) < 0 ||
+							  ( v2.positionScreen.x - v3.positionScreen.x )
+							* ( v4.positionScreen.y - v3.positionScreen.y )
+							- ( v2.positionScreen.y - v3.positionScreen.y )
+							* ( v4.positionScreen.x - v3.positionScreen.x ) < 0;
+							
+					if (side == THREE.DoubleSide || visible == (side == THREE.FrontSide)) 
+					{
+						face4Current = getNextFace4InPool();
+						face4Current.v1.copy(v1);
+						face4Current.v2.copy(v2);
+						face4Current.v3.copy(v3);
+						face4Current.v4.copy(v4);
+						type = 4;
+					} else continue;
+				} else continue;
 				
 			} else if (Std.is(face, Face3) == true)
 			{
@@ -355,22 +354,22 @@ class Projector
 				points3[1] = v2.positionScreen;
 				points3[2] = v3.positionScreen;
 				
-				//Negating original condition
-				if (v1.visible == false && v2.visible == false && v3.visible == false
-				 && clipBox.isIntersectionBox(boundingBox.setFromPoints(points3)) == false) continue;
-				
-				visible = ( ( v3.positionScreen.x - v1.positionScreen.x )
-						  * ( v2.positionScreen.y - v1.positionScreen.y )
-						  - ( v3.positionScreen.y - v1.positionScreen.y )
-						  * ( v2.positionScreen.x - v1.positionScreen.x ) ) < 0;
-				
-				//Negating original condition
-				if (side != THREE.DoubleSide && visible != (side == THREE.FrontSide)) continue;
-				
-				face3Current = getNextFace3InPool();
-				face3Current.v1.copy(v1);
-				face3Current.v2.copy(v2);
-				face3Current.v3.copy(v3);
+				if (v1.visible == true ||v2.visible == true || v3.visible == true
+				 || clipBox.isIntersectionBox(boundingBox.setFromPoints(points3)) == true)
+				{
+					visible = ( ( v3.positionScreen.x - v1.positionScreen.x )
+							  * ( v2.positionScreen.y - v1.positionScreen.y )
+							  - ( v3.positionScreen.y - v1.positionScreen.y )
+							  * ( v2.positionScreen.x - v1.positionScreen.x ) ) < 0;
+					
+					if (side == THREE.DoubleSide || visible == (side == THREE.FrontSide)) 
+					{
+						face3Current = getNextFace3InPool();
+						face3Current.v1.copy(v1);
+						face3Current.v2.copy(v2);
+						face3Current.v3.copy(v3);
+					} else continue;
+				} else continue;
 			}
 			
 			//Assign to a dynamic here because it is either Face3 or Face4
@@ -441,7 +440,10 @@ class Projector
 	}
 	
 	
-	
+	public function painterSort (a:Renderable, b:Renderable) : Int
+	{
+		return (b.z - a.z > 0 ? 1 : -1);
+	}
 	
 	
 	//Pools
@@ -527,12 +529,6 @@ class Projector
 			return particle;
 		}
 		return particlePool[particleCount++];
-	}
-	
-	
-	public function painterSort (a:Dynamic, b:Dynamic) : Float
-	{
-		return b.z - a.z;
 	}
 	
 	

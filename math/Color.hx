@@ -22,11 +22,9 @@ class Color
 	
 	public function set (value:Dynamic) : Color
 	{
-		var vType = Type.typeof(value);
-		if (Std.is(value, Color) == true) copy(value);
-		else if (vType.equals(TInt) == true) setHex(value);
-		else if (vType.equals(TObject) == true) setStyle(value);
-		
+		if      (Std.is(value, Color) == true) copy(value);
+		else if (Std.is(value, Int) == true) setHex(value);
+		else if (Std.is(value, String) == true) setStyle(value);
 		return this;
 	}
 	
@@ -147,6 +145,7 @@ class Color
 	
 	public function getHexString () : String
 	{
+		var hex = getHex();
 		return '000000'; //todo - int->hexstring
 	}
 	

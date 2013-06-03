@@ -8,6 +8,7 @@ import three.math.Matrix4;
 import three.math.Quaternion;
 import three.math.Vector3;
 import three.scenes.Scene;
+import three.THREE;
 
 /**
  * 
@@ -23,7 +24,8 @@ class Object3D
 	public var id:Int;
 	public var name:String;
 	public var parent:Object3D;
-	public var children:Array<Object3D>;
+	//public var children:Array<Object3D>;
+	public var children:Map<Object3D,Object3D>;
 	
 	public var up:Vector3;
 	public var position:Vector3;
@@ -58,11 +60,12 @@ class Object3D
 		id = 0;
 		name = '';
 		parent = null;
-		children = new Array<Object3D>();
+		children = new Map<Object3D,Object3D>();
+		//children = new Array<Object3D>();
 		up = new Vector3(0, 1, 0);
 		position = new Vector3();
 		rotation = new Vector3();
-		eulerOrder = 'XYZ';
+		eulerOrder = THREE.defaultEulerOrder;
 		scale = new Vector3(1, 1, 1);
 		
 		renderDepth = null;
@@ -182,30 +185,32 @@ class Object3D
 		if (object.parent != null) object.parent.remove(object);
 		
 		object.parent = this;
-		children.push(object);
-		var scene = this;
-		while (scene.parent != null) 
-		{
-			scene = scene.parent;
-		}
 		
-		//if (Std.is(scene, Scene) == true) 
+		if (children.exists(object) == false) children.set(object, object);
+		//children.push(object);
+		
+		var scene = this;
+		while (scene.parent != null) scene = scene.parent;
+		
+		if (Std.is(scene, Scene) == false) return;
 		cast(scene, Scene).__addObject(object);
 	}
 	
 	
 	public function remove (object:Object3D) : Bool
 	{
-		var index = Utils.indexOf(children, object);
-		if (index == -1) return false;
+		if (children.exists(object) == false) return false;
+		//var index = Utils.indexOf(children, object);
+		//if (index == -1) return false;
 		
 		object.parent = null;
-		children.splice(index, 1);
+		children.remove(object);
+		//children.splice(index, 1);
 		
 		var scene = this;
 		while (scene.parent != null) scene = scene.parent;
 		
-		//if (Std.is(scene, Scene) == false) return true;
+		if (Std.is(scene, Scene) == false) return true;
 		
 		cast(scene, Scene).__removeObject(object);
 		return true;
@@ -215,13 +220,32 @@ class Object3D
 	public function traverse (fnCallback:Dynamic)
 	{
 		fnCallback(this);
-		var i = 0, l = children.length;
-		while (i < l) children[i++].traverse(fnCallback);
+		var cIter = children.iterator();
+		while (cIter.hasNext() == true)
+		{
+			var child = cIter.next();
+			child.traverse(fnCallback);
+		}
+		//var i = 0, l = children.length;
+		//while (i < l) children[i++].traverse(fnCallback);
 	}
 	
 	
 	public function getObjectById (id:Int, recursive:Bool = false) : Object3D
 	{
+		var cIter = children.iterator();
+		while (cIter.hasNext() == true)
+		{
+			var child = cIter.next();
+			if (child.id == id) return child;
+			if (recursive == true)
+			{
+				var object = child.getObjectById(id, recursive);
+				if (object != null) return child;
+			}
+		}
+		return null;
+		/*
 		var i = 0, l = children.length;
 		while (i < l)
 		{
@@ -236,11 +260,26 @@ class Object3D
 			i++;
 		}
 		return null;
+		*/
 	}
 	
 	
 	public function getObjectByName (name:String, recursive:Bool = false) : Object3D
 	{
+		var cIter = children.iterator();
+		while (cIter.hasNext() == true)
+		{
+			var child = cIter.next();
+			if (child.name == name) return child;
+			
+			if (recursive == true)
+			{
+				var object = child.getObjectByName(name, recursive);
+				if (object != null) return object;
+			}
+		}
+		return null;
+		/*
 		var i = 0, l = children.length;
 		while (i < l)
 		{
@@ -254,6 +293,7 @@ class Object3D
 			}
 		}
 		return null;
+		*/
 	}
 	
 	
@@ -267,8 +307,7 @@ class Object3D
 	public function getDescendants () : Array<Object3D>
 	{
 		//todo - Unsure how this should work under Haxe
-		var a = new Array<Object3D>();
-		return a;
+		return new Array<Object3D>();
 	}
 	
 	
@@ -293,12 +332,15 @@ class Object3D
 			force = true;
 		}
 		
+		var cIter = children.iterator();
+		while (cIter.hasNext() == true) cIter.next().updateMatrixWorld(force);
+		/*
 		var i = 0, l = children.length;
 		while (i < l)
 		{
 			children[i++].updateMatrixWorld(force);
 		}
-		
+		*/
 	}
 	
 	
@@ -334,13 +376,20 @@ class Object3D
 		
 		object.userData = Json.parse(Json.stringify(userData));
 		
+		var cIter = children.iterator();
+		while (cIter.hasNext() == true)
+		{
+			var child = cIter.next();
+			object.add(child.clone());
+		}
+		/*
 		var i = 0, l = children.length;
 		while (i < l)
 		{
 			var child = children[i++];
 			object.add(child.clone());
 		}
-		
+		*/
 		return object;
 	}
 	

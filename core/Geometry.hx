@@ -6,6 +6,7 @@ import three.math.Color;
 import three.math.Matrix3;
 import three.math.Matrix4;
 import three.math.Sphere;
+import three.math.Vector2;
 import three.math.Vector3;
 
 /**
@@ -22,7 +23,7 @@ class Geometry
 	public var colors:Array<Color>;
 	public var normals:Array<Vector3>;
 	
-	public var faces:Array<Face4>;
+	public var faces:Array<Dynamic>;
 	public var faceUvs:Array<Dynamic>;
 	public var faceVertexUvs:Array<Dynamic>;
 	
@@ -56,10 +57,10 @@ class Geometry
 		vertices = new Array<Vector3>();
 		colors = new Array<Color>();
 		normals = new Array<Vector3>();
-		faces = new Array<Face4>();
+		faces = new Array<Dynamic>(); //Face3 or Face4
 		faceUvs = new Array<Dynamic>(); //NOTE: only temporary v3, change to v2 when its done
 		faceVertexUvs = new Array<Dynamic>();
-		faceVertexUvs.push(new Array<Dynamic>());
+		faceVertexUvs.push(new Array<Vector2>());
 		
 		morphTargets = new Array<Vector3>();
 		morphColors = new Array<Color>();
@@ -97,10 +98,13 @@ class Geometry
 			var face = faces[i];
 			face.normal.applyMatrix3(normalMatrix).normalize();
 			
-			var j = 0, jl = face.vertexNormals.length;
+			//since faces[] is Dynamic...
+			var faceVertexNormals:Array<Vector3> = face.vertexNormals;
+			
+			var j = 0, jl = faceVertexNormals.length;
 			while (j < jl)
 			{
-				face.vertexNormals[j++].applyMatrix3(normalMatrix).normalize();
+				faceVertexNormals[j++].applyMatrix3(normalMatrix).normalize();
 			}
 			i++;
 		}
@@ -112,22 +116,22 @@ class Geometry
 		var f = 0, fl = faces.length, face:Face4;
 		while (f < fl)
 		{
-			face = faces[f++];
+			face = cast(faces[f++], Face4);
 			face.centroid.set(0, 0, 0);
 			
-			if (Std.is(face, Face3) == true)
-			{
-				face.centroid.add(vertices[face.a]);
-				face.centroid.add(vertices[face.b]);
-				face.centroid.add(vertices[face.c]);
-				face.centroid.divideScalar(3);
-			} else 
+			if (Std.is(face, Face4) == true)
 			{
 				face.centroid.add(vertices[face.a]);
 				face.centroid.add(vertices[face.b]);
 				face.centroid.add(vertices[face.c]);
 				face.centroid.add(vertices[face.d]);
 				face.centroid.divideScalar(4);
+			} else 
+			{
+				face.centroid.add(vertices[face.a]);
+				face.centroid.add(vertices[face.b]);
+				face.centroid.add(vertices[face.c]);
+				face.centroid.divideScalar(3);
 			}
 		}
 	}
@@ -140,7 +144,7 @@ class Geometry
 		var f = 0, fl = faces.length, face:Face4;
 		while (f < fl)
 		{
-			face = faces[f++];
+			face = cast(faces[f++], Face4);
 			var vA = vertices[face.a];
 			var vB = vertices[face.b];
 			var vC = vertices[face.c];
@@ -193,7 +197,132 @@ class Geometry
 	
 	public function mergeVertices ()
 	{
-		//todo - ...
+		//todo - find duplicate vertices and remove, correcting face indices
+		var verticesMap = new Map<String,Int>();
+		var unique = [];
+		var changes = [];
+		var v:Vector3, key:String;
+		var precisionPoints = 4;
+		var precision = Math.pow(10, precisionPoints);
+		var indices = [];
+		
+		/*
+		
+		//Make the map of vertices -> indices
+		var i = 0, il = vertices.length;
+		while (i < il)
+		{
+			v = vertices[i];
+			key = [ Math.round(v.x * precision), Math.round(v.y * precision), Math.round(v.z * precision) ].join('_');
+			
+			if (verticesMap.exists(key) == false)
+			{
+				verticesMap.set(key, i);
+				unique.push(vertices[i]);
+				changes[i] = unique.length - 1;
+			} else {
+				changes[i] = changes[verticesMap.get(key)];
+			}
+			i++;
+		}
+		
+		var faceIndicesToRemove = [];
+		i = 0; il = faces.length;
+		while (i < il)
+		{
+			var face = faces[i];
+			
+			if (Std.is(face, Face3) == true)
+			{
+				var face:Face3 = cast(face, Face3);
+				face.a = changes[face.a];
+				face.b = changes[face.b];
+				face.c = changes[face.c];
+				
+				indices = [face.a, face.b, face.c];
+				var dupIndex = -1;
+				
+				var n = 0;
+				while (n < 3)
+				{
+					if (indices[n] == indices[(n + 1) % 3])
+					{
+						dupIndex = n;
+						faceIndicesToRemove.push(i);
+						break;
+					}
+					n++;
+				}
+				
+				
+			} else if (Std.is(face, Face4) == true)
+			{
+				var face:Face4 = cast(face, Face4);
+				face.a = changes[face.a];
+				face.b = changes[face.b];
+				face.c = changes[face.c];
+				face.d = changes[face.d];
+				
+				indices = [ face.a, face.b, face.c, face.d ];
+				var dupIndex = -1;
+				
+				var n = 0;
+				while (n < 4)
+				{
+					if (indices[n] == indices[(n + 1) % 4])
+					{
+						if (dupIndex >= 0) faceIndicesToRemove.push(i);
+						dupIndex = n;
+					}
+					n++;
+				}
+				
+				if (dupIndex >= 0)
+				{
+					indices.splice(dupIndex, 1);
+					var newFace = new Face3(indices[0], indices[1], indices[2], [face.normal], face.color, face.materialIndex);
+					var j = 0, jl = faceVertexUvs.length;
+					while (j < jl)
+					{
+						var u:Vector3 = faceVertexUvs[j][i];
+						if (u != null) u.splice(dupIndex, 1);
+						j++;
+					}
+					
+					if (face.vertexNormals && face.vertexNormals.length > 0)
+					{
+						newFace.vertexNormals = face.vertexNormals;
+						newFace.vertexNormals.splice(dupIndex, 1);
+					}
+					
+					if (face.vertexColors && face.vertexColors.length > 0)
+					{
+						newFace.vertexColors = face.vertexColors;
+						newFace.vertexColors.splice(dupIndex, 1);
+					}
+					
+					faces[i] = newFace;
+				}
+			}
+		}
+		
+		var i = faceIndicesToRemove.length - 1;
+		while (i >= 0)
+		{
+			faces.splice(i, 1);
+			var j = 0, jl = faceVertexUvs.length;
+			while (j < jl)
+			{
+				faceVertexUvs[j].splice(i, 1);
+				j++;
+			}
+			i--;
+		}
+		
+		var diff = vertices.length - unique.length;
+		vertices = unique;
+		return diff;
+		*/
 	}
 	
 	
@@ -209,16 +338,16 @@ class Geometry
 		while (i < l) geometry.faces.push(faces[i++].clone());
 		
 		/*
-		var uvs = faceVertexUvs[0];
+		var uvs:Array<Vector2> = faceVertexUvs[0];
 		i = 0; l = uvs.length;
 		while (i < l) 
 		{
 			var uv = uvs[i];
-			var uvCopy = new Array<Vector3>();
-			var j = 0, jl = uv.length;
+			var uvCopy = new Array<Vector2>();
+			var j = 0, jl = uvs.length;
 			while (j < jl)
 			{
-				uvCopy.push(new Vector3(uv[j].x, uv[j].y, 0)); //NOTE: should be v2 not v3
+				uvCopy.push(new Vector2(uv[j].x, uv[j].y));
 				j++;
 			}
 			
@@ -226,13 +355,13 @@ class Geometry
 			i++;
 		}
 		*/
+		
 		return geometry;
 	}
 	
 	
 	public function dispose ()
 	{
-		trace('Geometry.dispose: how does i can clean up after myself?');
 	}
 	
 	

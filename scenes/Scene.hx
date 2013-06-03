@@ -20,20 +20,20 @@ class Scene extends Object3D
 	
 	public var autoUpdate:Bool;
 	
-	public var __objects:Array<Object3D>;
-	public var __lights:Array<Object3D>;
+	public var __objects:Map<Object3D,Object3D>;
+	public var __lights:Map<Object3D,Object3D>;
 	
-	public var __objectsAdded:Array<Object3D>;
-	public var __objectsRemoved:Array<Object3D>;
+	public var __objectsAdded:Map<Object3D,Object3D>;
+	public var __objectsRemoved:Map<Object3D,Object3D>;
 	
 	
 	public function new() 
 	{
 		super();
-		__objects = new Array<Object3D>();
-		__lights = new Array<Object3D>();
-		__objectsAdded = new Array<Object3D>();
-		__objectsRemoved = new Array<Object3D>();
+		__objects = new Map<Object3D,Object3D>();
+		__lights = new Map<Object3D,Object3D>();
+		__objectsAdded = new Map<Object3D,Object3D>();
+		__objectsRemoved = new Map<Object3D,Object3D>();
 		
 		autoUpdate = true;
 		matrixAutoUpdate = false;
@@ -44,29 +44,23 @@ class Scene extends Object3D
 	{
 		if (Std.is(object, Light) == true)
 		{
-			if (Utils.indexOf(__lights, object) == -1) __lights.push(object);
+			if (__lights.exists(object) == false) __lights.set(object, object);
 			if (object.target != null && object.target.parent == null) add(object.target);
 			
 		//todo - THREE.Bone is also a false condition here in r58
 		} else if (Std.is(object, Camera) == false)
 		{
-			if (Utils.indexOf(__objects, object) == -1) 
+			if (__objects.exists(object) == false)
 			{
-				__objects.push(object);
-				__objectsAdded.push(object);
+				__objects.set(object, object);
+				__objectsAdded.set(object, object);
 				
-				var i = Utils.indexOf(__objectsRemoved, object);
-				if (i != -1) __objectsRemoved.splice(i, 1);
+				if (__objectsRemoved.exists(object) == true) __objectsRemoved.remove(object);
 			}
 		}
 		
-		var c = 0, cl = object.children.length;
-		while (c < cl)
-		{
-			__addObject(object.children[c++]);
-		}
-		
-		trace('Scene.__addObject');
+		var cIter = object.children.iterator();
+		while (cIter.hasNext() == true) __addObject(cIter.next());
 	}
 	
 	
@@ -74,28 +68,21 @@ class Scene extends Object3D
 	{
 		if (Std.is(object, Light) == true)
 		{
-			var i = Utils.indexOf(__lights, object);
-			if (i != -1) __lights.splice(i, 1);
+			if (__lights.exists(object) == true) __lights.remove(object);
 			
 		} else if (Std.is(object, Camera) == false)
 		{
-			var i = Utils.indexOf(__objects, object);
-			if (i != -1)
+			if (__objects.exists(object) == true)
 			{
-				__objects.splice(i, 1);
-				__objectsRemoved.push(object);
+				__objects.set(object, object);
+				__objectsRemoved.set(object, object);
 				
-				var ai = Utils.indexOf(__objectsAdded, object);
-				if (ai != -1) __objectsAdded.splice(ai, 1);
+				if (__objectsAdded.exists(object) == true) __objectsAdded.remove(object);
 			}
 		}
 		
-		var c = 0, cl = children.length;
-		while (c < cl)
-		{
-			__removeObject(object.children[c++]);
-		}
-		trace('Scene.__removeObject');
+		var cIter = object.children.iterator();
+		while (cIter.hasNext() == true) __removeObject(cIter.next());
 	}
 	
 	

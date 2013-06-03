@@ -1,9 +1,6 @@
 
 package three.extras;
 
-import three.math.Vector3;
-import three.math.Vector4;
-
 /**
  * 
  * @author dcm
@@ -11,7 +8,7 @@ import three.math.Vector4;
 
 class Utils
 {
-	
+	//This can be safely deleted now. All arrays that made use of this are now Map<>
 	static public function indexOf (a:Array<Dynamic>, value:Dynamic) : Int
 	{
 		var i = 0, l = a.length;
@@ -23,6 +20,5 @@ class Utils
 		}
 		return -1;
 	}
-	
 }
 

@@ -25,7 +25,7 @@ class THREE
 	static public var RenderableVertex:Int = 5;
 	
 	
-	
+	static public var defaultEulerOrder:String = 'XYZ';
 	
 	
 	// ----- Original THREE.js Constants -----

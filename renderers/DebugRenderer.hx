@@ -74,7 +74,7 @@ class DebugRenderer
 	{
 		clear();
 		context.setTransform(1, 0, 0, -1, canvasWidthHalf, canvasHeightHalf);
-		renderData = projector.projectScene(scene, camera);
+		renderData = projector.projectScene(scene, camera, true, true);
 		
 		var e = 0, el = renderData.elements.length;
 		while (e < el)
@@ -114,9 +114,9 @@ class DebugRenderer
 		var g = Math.round(material.color.g * 255);
 		var b = Math.round(material.color.b * 255);
 		context.globalAlpha = material.opacity;
-		if (material.blending == THREE.NormalBlending) context.globalCompositeOperation = 'source-over';
-		else if (material.blending == THREE.AdditiveBlending) context.globalCompositeOperation = 'lighter';
-		else if (material.blending == THREE.SubtractiveBlending) context.globalCompositeOperation = 'darker';
+		//if (material.blending == THREE.NormalBlending) context.globalCompositeOperation = 'source-over';
+		//else if (material.blending == THREE.AdditiveBlending) context.globalCompositeOperation = 'lighter';
+		//else if (material.blending == THREE.SubtractiveBlending) context.globalCompositeOperation = 'darker';
 
 		if (element.material.wireframe == true)
 		{
@@ -134,7 +134,7 @@ class DebugRenderer
 			var y5 = element.v2.positionScreen.y * canvasHeightHalf;
 			var x6 = element.v4.positionScreen.x * canvasWidthHalf;
 			var y6 = element.v4.positionScreen.y * canvasHeightHalf;
-			
+			/*
 			context.beginPath();
 			context.moveTo(x1, y1);
 			context.lineTo(x2, y2);
@@ -142,6 +142,13 @@ class DebugRenderer
 			context.lineTo(x5, y5);
 			context.lineTo(x3, y3);
 			context.lineTo(x6, y6);
+			context.closePath();
+			*/
+			context.beginPath();
+			context.moveTo(x1, y1);
+			context.lineTo(x2, y2);
+			context.lineTo(x3, y3);
+			context.lineTo(x4, y4);
 			context.closePath();
 			context.fillStyle = 'rgb($r,$g,$b)';
 			context.fill();

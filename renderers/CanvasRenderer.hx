@@ -306,8 +306,8 @@ class CanvasRenderer
 			setBlending(THREE.NormalBlending);
 			setOpacity(1);
 			var r = Math.floor(clearColor.r * 255);
-			var g = Math.floor(clearColor.r * 255);
-			var b = Math.floor(clearColor.r * 255);
+			var g = Math.floor(clearColor.g * 255);
+			var b = Math.floor(clearColor.b * 255);
 			setFillStyle('rgba($r,$g,$b,$clearAlpha)');
 			
 			context.fillRect(
@@ -344,7 +344,7 @@ class CanvasRenderer
 			if (material == null || material.visible == false) continue;
 			
 			elemBox.makeEmpty();
-
+			
 			if (element.type == THREE.RenderableParticle)
 			{
 				var element:RenderableParticle = cast(element, RenderableParticle);
@@ -471,19 +471,18 @@ class CanvasRenderer
 		{
 			var light = lights[l++];
 			lightColor.copy(light.color);
-			//todo - lights :)
-			/*
-			if (Std.is(light, AmbientLight) == true)
+			if (light.type == THREE.AmbientLight)
 			{
 				ambientLight.add(lightColor);
+			/*
 			} else if (Std.is(light, DirectionalLight) == true)
 			{
 				directionalLights.add(lightColor);
 			} else if (Std.is(light, PointLight) == true)
 			{
 				pointLights.add(lightColor);
-			}
 			*/
+			}
 		}
 		
 	}
