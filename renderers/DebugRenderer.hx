@@ -16,7 +16,18 @@ import three.scenes.Scene;
 import three.THREE;
 
 /**
- * ...
+ * HTML Canvas Renderer used to debug what has been ported so far.
+ * Disclaimer: This is NOT a production renderer, it only renders faces (poorly) in Mesh objects.
+ * 
+ * Example Usage:
+ * var renderer = new DebugRenderer();
+ * renderer.setSize(800, 600);
+ * var scene = new Scene();
+ * var camera = new PerspectiveCamera(60, 800 / 600, 0.1, 2000);
+ * scene.add(camera);
+ * //Create some geometries here...
+ * renderer.render(scene, camera);
+ * 
  * @author dcm
  */
 
@@ -33,6 +44,7 @@ class DebugRenderer
 	public var canvasWidthHalf:Float;
 	public var canvasHeightHalf:Float;
 	
+	public var autoClear:Bool = true;
 	public var clearColor:Color;
 	public var clearAlpha:Float = 1.0;
 	
@@ -72,7 +84,7 @@ class DebugRenderer
 	
 	public function render (scene:Scene, camera:Camera)
 	{
-		clear();
+		if (autoClear == true) clear();
 		context.setTransform(1, 0, 0, -1, canvasWidthHalf, canvasHeightHalf);
 		renderData = projector.projectScene(scene, camera, true, true);
 		
@@ -108,15 +120,17 @@ class DebugRenderer
 		var y4 = element.v4.positionScreen.y * canvasHeightHalf;
 		
 		var material = element.material;
-		if (Std.is(material, MeshFaceMaterial) == true) material = cast(material, MeshFaceMaterial).materials[0];
-		var c = material.color.clone();
+		if (Std.is(material, MeshFaceMaterial) == true) 
+		{
+			material = cast(material, MeshFaceMaterial).materials[0];
+		}
 		var r = Math.round(material.color.r * 255);
 		var g = Math.round(material.color.g * 255);
 		var b = Math.round(material.color.b * 255);
 		context.globalAlpha = material.opacity;
-		//if (material.blending == THREE.NormalBlending) context.globalCompositeOperation = 'source-over';
-		//else if (material.blending == THREE.AdditiveBlending) context.globalCompositeOperation = 'lighter';
-		//else if (material.blending == THREE.SubtractiveBlending) context.globalCompositeOperation = 'darker';
+		if (material.blending == THREE.NormalBlending) context.globalCompositeOperation = 'source-over';
+		else if (material.blending == THREE.AdditiveBlending) context.globalCompositeOperation = 'lighter';
+		else if (material.blending == THREE.SubtractiveBlending) context.globalCompositeOperation = 'darker';
 
 		if (element.material.wireframe == true)
 		{
@@ -134,7 +148,6 @@ class DebugRenderer
 			var y5 = element.v2.positionScreen.y * canvasHeightHalf;
 			var x6 = element.v4.positionScreen.x * canvasWidthHalf;
 			var y6 = element.v4.positionScreen.y * canvasHeightHalf;
-			/*
 			context.beginPath();
 			context.moveTo(x1, y1);
 			context.lineTo(x2, y2);
@@ -142,13 +155,6 @@ class DebugRenderer
 			context.lineTo(x5, y5);
 			context.lineTo(x3, y3);
 			context.lineTo(x6, y6);
-			context.closePath();
-			*/
-			context.beginPath();
-			context.moveTo(x1, y1);
-			context.lineTo(x2, y2);
-			context.lineTo(x3, y3);
-			context.lineTo(x4, y4);
 			context.closePath();
 			context.fillStyle = 'rgb($r,$g,$b)';
 			context.fill();

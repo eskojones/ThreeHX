@@ -18,14 +18,14 @@ class Image
 	
 	public function new(width:Int = null, height:Int = null) 
 	{
+		data = new Array<Int>();
+		
 		if (width != null) 
 		{
 			this.width = width;
 			this.height = height;
-			data = new Array<Int>();
-			var i = 0, l = width * height * 4;
-			while (i++ < l) data.push(0);
 		}
+		
 	}
 	
 }

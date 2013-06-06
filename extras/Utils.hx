@@ -20,5 +20,13 @@ class Utils
 		}
 		return -1;
 	}
+	
+	
+	static public inline function get<T>(arr:Array<T>, idx:Int) : T
+	{
+		if (idx < 0) idx += arr.length;
+		if (idx >= arr.length) idx %= arr.length;
+		return arr[idx];    
+	}
 }
 

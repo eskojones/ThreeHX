@@ -4,31 +4,31 @@ package three.core;
 import three.extras.Utils;
 
 /**
- * EventDispatcher
- * TODO: Rewrite for Haxe
+ * EventDispatcher by mrdoob
+ * TODO: Rewrite for Haxe - THIS IS NOT WORKING YET
  * @author dcm
  */
 
 class EventDispatcher
 {
 	
-	private var listeners:Map < String, Array<Dynamic> > ;
+	private var listeners:Map < String, Map<Dynamic,Dynamic> > ;
 
 	
 	public function new() 
 	{
-		listeners = new Map < String, Array<Dynamic> > ();
+		listeners = new Map < String, Map<Dynamic,Dynamic> > ();
 	}
 	
 	
 	public function addEventListener (type:String, listener:Dynamic) : Void
 	{
-		if (listeners.exists(type) == false) listeners.set(type, new Array<Dynamic>());
+		//todo - Make an appropriate Map<> that can differentiate between anon functions
+		//if (listeners.exists(type) == false) listeners.set(type, new Map<Dynamic,Dynamic>());
 		
-		var arr = listeners.get(type);
-		var i = 0, l = arr.length;
-		while (i < l) if (arr[i++] == listener) return;
-		arr.push(listener);
+		var listenersOfType = listeners.get(type);
+		if (listenersOfType.exists(listener) == true) return;
+		listenersOfType.set(listener, listener);
 	}
 	
 	
@@ -36,9 +36,8 @@ class EventDispatcher
 	{
 		if (listeners.exists(type) == false) return false;
 		
-		var arr = listeners.get(type);
-		var idx = Utils.indexOf(arr, listener);
-		if (idx == -1) return false;
+		var listenersOfType = listeners.get(type);
+		if (listenersOfType.exists(listener) == false) return false;
 		return true;
 	}
 	
@@ -46,19 +45,20 @@ class EventDispatcher
 	public function removeEventListener (type:String, listener:Dynamic) : Void
 	{
 		if (listeners.exists(type) == false) return;
-		var arr = listeners.get(type);
-		var idx = Utils.indexOf(arr, listener);
-		if (idx == -1) return;
-		arr.splice(idx, 1);
+		
+		var listenersOfType = listeners.get(type);
+		if (listenersOfType.exists(listener) == false) return;
+		listenersOfType.remove(listener);
 	}
 	
 	
 	public function dispatchEvent (event:Dynamic) : Void
 	{
 		if (listeners.exists(event.type) == false) return;
-		var arr = listeners.get(event.type);
-		var i = 0, l = arr.length;
-		while (i < l) arr[i++](event);
+		
+		var listenersOfType = listeners.get(event.type);
+		var listenerIter = listenersOfType.iterator();
+		while (listenerIter.hasNext() == true) listenerIter.next()(event);
 	}
 	
 }

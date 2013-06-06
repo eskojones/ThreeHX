@@ -12,6 +12,7 @@ class Color
 	public var r:Float = 1.0;
 	public var g:Float = 1.0;
 	public var b:Float = 1.0;
+	public var a:Float = 1.0;
 
 	
 	public function new(value:Int = null) 
@@ -238,6 +239,16 @@ class Color
 		return new Color().setRGB(r, g, b);
 	}
 	
+	
+	public function toArray () : Array<Float>
+	{
+		var arr = new Array<Float>();
+		arr.push(r);
+		arr.push(g);
+		arr.push(b);
+		arr.push(a);
+		return arr;
+	}
 	
 }
 

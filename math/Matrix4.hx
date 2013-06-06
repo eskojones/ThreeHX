@@ -15,7 +15,6 @@ class Matrix4
 
 	public var elements:Array<Float>;
 	
-	
 	public function new(
 		n11:Float = 1, n12:Float = 0, n13:Float = 0, n14:Float = 0,
 		n21:Float = 0, n22:Float = 1, n23:Float = 0, n24:Float = 0,
@@ -23,6 +22,7 @@ class Matrix4
 		n41:Float = 0, n42:Float = 0, n43:Float = 0, n44:Float = 1) 
 	{
 		elements = new Array<Float>();
+		
 		var i = 0;
 		while (i++ < 16) elements.push(0.0);
 		
@@ -131,6 +131,7 @@ class Matrix4
 		var c = Math.cos(v.y), d = Math.sin(v.y);
 		var e = Math.cos(v.z), f = Math.sin(v.z);
 		
+		//todo - rest of the euler orders
 		if (order == 'XYZ')
 		{
 			var ae = a * e, af = a * f, be = b * e, bf = b * f;
@@ -401,8 +402,14 @@ class Matrix4
 	}
 	
 	
-	public function flattenToArray (flat:Array<Float>) : Array<Float>
+	public function flattenToArray (flat:Array<Float> = null) : Array<Float>
 	{
+		if (flat == null) 
+		{
+			flat = new Array<Float>();
+			var i = 0;
+			while (i++ < 16) flat.push(0.0);
+		}
 		var te = elements;
 		flat[ 0 ] = te[0]; flat[ 1 ] = te[1]; flat[ 2 ] = te[2]; flat[ 3 ] = te[3];
 		flat[ 4 ] = te[4]; flat[ 5 ] = te[5]; flat[ 6 ] = te[6]; flat[ 7 ] = te[7];

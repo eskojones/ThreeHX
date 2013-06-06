@@ -139,6 +139,7 @@ class Raycaster
 	
 	public function intersectDescendants (object:Object3D, raycaster:Raycaster, intersects:Array<Dynamic>)
 	{
+		//todo - Object3D.getDescendants()
 		var descendants = object.getDescendants();
 		var i = 0, l = descendants.length;
 		while (i < l)
@@ -155,15 +156,15 @@ class Raycaster
 	}
 	
 	
-	public function intersectObjects (objects:Array<Object3D>, recursive:Bool = true) : Array<Dynamic>
+	public function intersectObjects (objects:Map<Object3D,Object3D>, recursive:Bool = true) : Array<Dynamic>
 	{
 		var intersects = new Array<Dynamic>();
-		var i = 0, l = objects.length;
-		while (i < l)
+		var objIter = objects.iterator();
+		while (objIter.hasNext() == true)
 		{
-			var obj = objects[i++];
-			intersectObject(obj, this, intersects);
-			if (recursive == true) intersectDescendants(obj, this, intersects);
+			var object = objIter.next();
+			intersectObject(object, this, intersects);
+			if (recursive == true) intersectDescendants(object, this, intersects);
 		}
 		
 		intersects.sort(function (a:Dynamic, b:Dynamic) : Int {

@@ -16,7 +16,6 @@ import three.math.Vector3;
 
 class Geometry
 {
-	
 	public var id:Int;
 	public var name:String;
 	public var vertices:Array<Vector3>;
@@ -50,7 +49,9 @@ class Geometry
 	public var colorsNeedUpdate:Bool;
 	public var lineDistancesNeedUpdate:Bool;
 	public var buffersNeedUpdate:Bool;
-	
+
+	//Cache for .computeVertexNormals
+	private var __tmpVertices:Array<Vector3>;
 
 	public function new() 
 	{
@@ -58,7 +59,7 @@ class Geometry
 		colors = new Array<Color>();
 		normals = new Array<Vector3>();
 		faces = new Array<Dynamic>(); //Face3 or Face4
-		faceUvs = new Array<Dynamic>(); //NOTE: only temporary v3, change to v2 when its done
+		faceUvs = new Array<Dynamic>();
 		faceVertexUvs = new Array<Dynamic>();
 		faceVertexUvs.push(new Array<Vector2>());
 		
@@ -82,6 +83,8 @@ class Geometry
 		colorsNeedUpdate = false;
 		lineDistancesNeedUpdate = false;
 		buffersNeedUpdate = false;
+		
+		__tmpVertices = null;
 	}
 	
 	
@@ -113,10 +116,10 @@ class Geometry
 	
 	public function computeCentroids ()
 	{
-		var f = 0, fl = faces.length, face:Face4;
+		var f = 0, fl = faces.length, face;
 		while (f < fl)
 		{
-			face = cast(faces[f++], Face4);
+			face = faces[f++];
 			face.centroid.set(0, 0, 0);
 			
 			if (Std.is(face, Face4) == true)
@@ -141,10 +144,10 @@ class Geometry
 	{
 		var cb = new Vector3(), ab = new Vector3();
 		
-		var f = 0, fl = faces.length, face:Face4;
+		var f = 0, fl = faces.length, face;
 		while (f < fl)
 		{
-			face = cast(faces[f++], Face4);
+			face = faces[f++];
 			var vA = vertices[face.a];
 			var vB = vertices[face.b];
 			var vC = vertices[face.c];
@@ -157,9 +160,143 @@ class Geometry
 	}
 	
 	
-	public function computeVertexNormals ()
+	public function computeVertexNormals (areaWeighted:Bool = false)
 	{
-		//todo - when i can be bothered...
+		if (__tmpVertices == null)
+		{
+			__tmpVertices = new Array<Vector3>();
+			var v = 0, vl = vertices.length;
+			while (v < vl)
+			{
+				__tmpVertices[v++] = new Vector3();
+			}
+			
+			var f = 0, fl = faces.length;
+			while (f < fl)
+			{
+				var face = faces[f++];
+				if (Std.is(face, Face3) == true)
+				{
+					face.vertexNormals = [ new Vector3(), new Vector3(), new Vector3() ];
+				} else {
+					face.vertexNormals = [ new Vector3(), new Vector3(), new Vector3(), new Vector3() ];
+				}
+			}
+		} else {
+			
+			var v = 0, vl = vertices.length;
+			while (v < vl)
+			{
+				__tmpVertices[v++].set(0, 0, 0);
+			}
+		}
+		
+		if (areaWeighted == true)
+		{
+			var vA:Vector3;
+			var vB:Vector3;
+			var vC:Vector3;
+			var vD:Vector3;
+			var cb = new Vector3();
+			var ab = new Vector3();
+			var db = new Vector3();
+			var dc = new Vector3();
+			var bc = new Vector3();
+			
+			var f = 0, fl = faces.length;
+			while (f < fl)
+			{
+				var face = faces[f++];
+				
+				if (Std.is(face, Face3) == true)
+				{
+					vA = this.vertices[face.a];
+					vB = this.vertices[face.b];
+					vC = this.vertices[face.c];
+					
+					cb.subVectors(vC, vB);
+					ab.subVectors(vA, vB);
+					cb.cross(ab);
+					
+					__tmpVertices[face.a].add(cb);
+					__tmpVertices[face.b].add(cb);
+					__tmpVertices[face.c].add(cb);
+					
+				} else {
+					vA = this.vertices[face.a];
+					vB = this.vertices[face.b];
+					vC = this.vertices[face.c];
+					vD = this.vertices[face.d];
+					
+					//abd
+					db.subVectors(vD, vB);
+					ab.subVectors(vA, vB);
+					db.cross(ab);
+					
+					__tmpVertices[face.a].add(db);
+					__tmpVertices[face.b].add(db);
+					__tmpVertices[face.d].add(db);
+					
+					//bcd
+					dc.subVectors(vD, vC);
+					bc.subVectors(vB, vC);
+					dc.cross(bc);
+					
+					__tmpVertices[face.b].add(dc);
+					__tmpVertices[face.c].add(dc);
+					__tmpVertices[face.d].add(dc);
+					
+				}
+			}
+			
+			
+		} else
+		{
+			var f = 0, fl = faces.length;
+			while (f < fl)
+			{
+				var face = faces[f++];
+				
+				if (Std.is(face, Face3) == true)
+				{
+					__tmpVertices[face.a].add(face.normal);
+					__tmpVertices[face.b].add(face.normal);
+					__tmpVertices[face.c].add(face.normal);
+				} else {
+					__tmpVertices[face.a].add(face.normal);
+					__tmpVertices[face.b].add(face.normal);
+					__tmpVertices[face.c].add(face.normal);
+					__tmpVertices[face.d].add(face.normal);
+				}
+			}
+		}
+		
+		var v = 0, vl = vertices.length;
+		while (v < vl)
+		{
+			__tmpVertices[v++].normalize();
+		}
+		
+		var f = 0, fl = faces.length;
+		while (f < fl)
+		{
+			var face = faces[f++];
+			
+			if (Std.is(face, Face3) == true)
+			{
+				face.vertexNormals[0].copy(__tmpVertices[face.a]);
+				face.vertexNormals[1].copy(__tmpVertices[face.b]);
+				face.vertexNormals[2].copy(__tmpVertices[face.c]);
+			} else if (Std.is(face, Face4) == true)
+			{
+				face.vertexNormals[0].copy(__tmpVertices[face.a]);
+				face.vertexNormals[1].copy(__tmpVertices[face.b]);
+				face.vertexNormals[2].copy(__tmpVertices[face.c]);
+				face.vertexNormals[3].copy(__tmpVertices[face.d]);
+			}
+		}
+		
+		
 	}
 	
 	
@@ -198,6 +335,8 @@ class Geometry
 	public function mergeVertices ()
 	{
 		//todo - find duplicate vertices and remove, correcting face indices
+		//Almost certain this is broken, but cant really tell without a renderer :)
+		
 		var verticesMap = new Map<String,Int>();
 		var unique = [];
 		var changes = [];
@@ -206,7 +345,7 @@ class Geometry
 		var precision = Math.pow(10, precisionPoints);
 		var indices = [];
 		
-		/*
+		__tmpVertices = null; //reset cache of vertices as it will now be changing
 		
 		//Make the map of vertices -> indices
 		var i = 0, il = vertices.length;
@@ -280,22 +419,22 @@ class Geometry
 				if (dupIndex >= 0)
 				{
 					indices.splice(dupIndex, 1);
-					var newFace = new Face3(indices[0], indices[1], indices[2], [face.normal], face.color, face.materialIndex);
+					var newFace = new Face3(indices[0], indices[1], indices[2], [face.normal], [face.color], face.materialIndex);
 					var j = 0, jl = faceVertexUvs.length;
 					while (j < jl)
 					{
-						var u:Vector3 = faceVertexUvs[j][i];
+						var u = faceVertexUvs[j][i];
 						if (u != null) u.splice(dupIndex, 1);
 						j++;
 					}
 					
-					if (face.vertexNormals && face.vertexNormals.length > 0)
+					if (face.vertexNormals != null && face.vertexNormals.length > 0)
 					{
 						newFace.vertexNormals = face.vertexNormals;
 						newFace.vertexNormals.splice(dupIndex, 1);
 					}
 					
-					if (face.vertexColors && face.vertexColors.length > 0)
+					if (face.vertexColors != null && face.vertexColors.length > 0)
 					{
 						newFace.vertexColors = face.vertexColors;
 						newFace.vertexColors.splice(dupIndex, 1);
@@ -304,6 +443,7 @@ class Geometry
 					faces[i] = newFace;
 				}
 			}
+			i++;
 		}
 		
 		var i = faceIndicesToRemove.length - 1;
@@ -320,9 +460,9 @@ class Geometry
 		}
 		
 		var diff = vertices.length - unique.length;
+		trace('Geometry.mergeVertices: ' + vertices.length + ' -> ' + unique.length);
 		vertices = unique;
 		return diff;
-		*/
 	}
 	
 	

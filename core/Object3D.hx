@@ -24,7 +24,6 @@ class Object3D
 	public var id:Int;
 	public var name:String;
 	public var parent:Object3D;
-	//public var children:Array<Object3D>;
 	public var children:Map<Object3D,Object3D>;
 	
 	public var up:Vector3;
@@ -61,7 +60,6 @@ class Object3D
 		name = '';
 		parent = null;
 		children = new Map<Object3D,Object3D>();
-		//children = new Array<Object3D>();
 		up = new Vector3(0, 1, 0);
 		position = new Vector3();
 		rotation = new Vector3();
@@ -187,7 +185,6 @@ class Object3D
 		object.parent = this;
 		
 		if (children.exists(object) == false) children.set(object, object);
-		//children.push(object);
 		
 		var scene = this;
 		while (scene.parent != null) scene = scene.parent;
@@ -200,12 +197,9 @@ class Object3D
 	public function remove (object:Object3D) : Bool
 	{
 		if (children.exists(object) == false) return false;
-		//var index = Utils.indexOf(children, object);
-		//if (index == -1) return false;
 		
 		object.parent = null;
 		children.remove(object);
-		//children.splice(index, 1);
 		
 		var scene = this;
 		while (scene.parent != null) scene = scene.parent;
@@ -226,8 +220,6 @@ class Object3D
 			var child = cIter.next();
 			child.traverse(fnCallback);
 		}
-		//var i = 0, l = children.length;
-		//while (i < l) children[i++].traverse(fnCallback);
 	}
 	
 	
@@ -245,22 +237,6 @@ class Object3D
 			}
 		}
 		return null;
-		/*
-		var i = 0, l = children.length;
-		while (i < l)
-		{
-			var child = children[i];
-			if (child.id == id) return child;
-			
-			if (recursive == true)
-			{
-				child = child.getObjectById(id, recursive);
-				if (child != null) return child;
-			}
-			i++;
-		}
-		return null;
-		*/
 	}
 	
 	
@@ -279,21 +255,6 @@ class Object3D
 			}
 		}
 		return null;
-		/*
-		var i = 0, l = children.length;
-		while (i < l)
-		{
-			var child = children[i++];
-			if (child.name == name) return child;
-			
-			if (recursive == true)
-			{
-				child = child.getObjectByName(name, recursive);
-				if (child != null) return child;
-			}
-		}
-		return null;
-		*/
 	}
 	
 	
@@ -334,13 +295,6 @@ class Object3D
 		
 		var cIter = children.iterator();
 		while (cIter.hasNext() == true) cIter.next().updateMatrixWorld(force);
-		/*
-		var i = 0, l = children.length;
-		while (i < l)
-		{
-			children[i++].updateMatrixWorld(force);
-		}
-		*/
 	}
 	
 	
@@ -382,14 +336,7 @@ class Object3D
 			var child = cIter.next();
 			object.add(child.clone());
 		}
-		/*
-		var i = 0, l = children.length;
-		while (i < l)
-		{
-			var child = children[i++];
-			object.add(child.clone());
-		}
-		*/
+		
 		return object;
 	}
 	

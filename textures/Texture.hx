@@ -12,10 +12,9 @@ import three.THREE;
 
 class Texture
 {
-	
 	public var id:Int;
 	public var name:String;
-	public var image:Image;
+	public var image:Dynamic; 
 	
 	public var mipmaps:Array<Dynamic>; //??
 	public var mapping:Int;
@@ -40,7 +39,7 @@ class Texture
 	public var unpackAlignment:Int = 4;
 	
 	public var needsUpdate:Bool = false;
-	public var onUpdate:Dynamic; //probably a callback fn
+	public var onUpdate:Dynamic = null; //callback function checked+called by renderers after loading texture
 	
 	
 	public function new(
@@ -71,6 +70,8 @@ class Texture
 		
 		offset = new Vector2(0, 0);
 		repeat = new Vector2(1, 1);
+		
+		if (image != null) needsUpdate = true;
 	}
 	
 	

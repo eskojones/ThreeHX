@@ -12,7 +12,6 @@ import three.THREE;
 
 class Material
 {
-	
 	public var id:Int;
 	public var name:String;
 	public var side:Int;

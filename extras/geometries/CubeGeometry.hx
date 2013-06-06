@@ -47,6 +47,9 @@ class CubeGeometry extends Geometry
 		buildPlane('x', 'z',  1, -1, width, depth,  -hhalf, 0); //ny
 		buildPlane('x', 'y',  1, -1, width, height, dhalf, 0); //pz
 		buildPlane('x', 'y', -1, -1, width, height, -dhalf, 0); //nz
+		
+		mergeVertices();
+		computeCentroids();
 	}
 	
 	
@@ -127,8 +130,10 @@ class CubeGeometry extends Geometry
 			iy++;
 		}
 		
-		computeCentroids();
-		mergeVertices();
+		//do we really need to do this here? 
+		//seems like a waste since we can just do it once at the end (or am i wrong?)
+		//mergeVertices();
+		//computeCentroids();
 	}
 	
 	
